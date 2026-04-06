@@ -1,0 +1,47 @@
+name: Deploy para LocalWeb via FTP
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-deploy:
+    name: Build e Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout do código
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      # 2. Configurar Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # 3. Instalar dependências
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Fazer build do projeto
+      - name: Build do projeto
+        run: npm run build
+
+      # 5. Deploy via FTP para LocalWeb
+      - name: Deploy via FTP para LocalWeb
+        uses: locaweb/ftp-deploy@1.0.0
+        with:
+          host: ${{ secrets.LOCAWEB_HOST }}
+          user: ${{ secrets.LOCAWEB_USER }}
+          password: ${{ secrets.LOCAWEB_PASSWORD }}
+          localDir: "dist/public"
+          remoteDir: "public_html"
+          forceSsl: true
+
+      # 6. Notificar sucesso
+      - name: ✅ Deploy realizado com sucesso!
+        run: echo "Site atualizado na LocalWeb com sucesso!"
