@@ -1,0 +1,6 @@
+# Editar código
+# Fazer commit
+git add .
+git commit -m "Descrição da mudança"
+git push origin main
+# Site atualiza automaticamente! 🚀
